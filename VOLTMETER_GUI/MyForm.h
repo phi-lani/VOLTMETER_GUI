@@ -1,0 +1,517 @@
+#pragma once
+
+namespace VOLTMETERGUI {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for MyForm
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::GroupBox^ groupBox1;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::ComboBox^ comboBox2;
+	private: System::Windows::Forms::ComboBox^ comboBox1;
+	private: System::Windows::Forms::Button^ btnExit;
+
+	private: System::Windows::Forms::Button^ btnConnect;
+
+	private: System::Windows::Forms::GroupBox^ groupBox2;
+	private: System::Windows::Forms::Button^ btnRead;
+	private: System::Windows::Forms::Button^ btnStatus;
+
+
+
+
+	private: System::Windows::Forms::Button^ btnClrLog;
+
+	private: System::Windows::Forms::Button^ btnLog;
+	private: System::Windows::Forms::Button^ btnkV;
+
+
+	private: System::Windows::Forms::Button^ btnHold;
+	private: System::Windows::Forms::Button^ btnV;
+
+
+	private: System::Windows::Forms::Button^ btnmV;
+
+	private: System::Windows::Forms::Button^ btnCalibrate;
+
+	private: System::Windows::Forms::Panel^ panel1;
+	private: System::Windows::Forms::GroupBox^ groupBox3;
+	private: System::Windows::Forms::DataGridView^ dataGridView1;
+	private: System::Windows::Forms::Label^ mV;
+	private: System::Windows::Forms::Label^ V;
+	private: System::Windows::Forms::Label^ kV;
+
+
+
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ID;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ voltage;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ time;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ date;
+	private: System::Windows::Forms::Label^ voltageValue;
+
+	private: System::Windows::Forms::Label^ polaritySign;
+
+	private: System::Windows::Forms::Panel^ panel2;
+	private: System::Windows::Forms::Label^ label8;
+
+
+
+
+
+
+
+
+
+
+
+	protected:
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		System::ComponentModel::Container ^components;
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->btnExit = (gcnew System::Windows::Forms::Button());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->btnConnect = (gcnew System::Windows::Forms::Button());
+			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
+			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
+			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->btnClrLog = (gcnew System::Windows::Forms::Button());
+			this->btnLog = (gcnew System::Windows::Forms::Button());
+			this->btnHold = (gcnew System::Windows::Forms::Button());
+			this->btnkV = (gcnew System::Windows::Forms::Button());
+			this->btnmV = (gcnew System::Windows::Forms::Button());
+			this->btnV = (gcnew System::Windows::Forms::Button());
+			this->btnCalibrate = (gcnew System::Windows::Forms::Button());
+			this->btnRead = (gcnew System::Windows::Forms::Button());
+			this->btnStatus = (gcnew System::Windows::Forms::Button());
+			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
+			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
+			this->ID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->voltage = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->time = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->date = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->kV = (gcnew System::Windows::Forms::Label());
+			this->V = (gcnew System::Windows::Forms::Label());
+			this->mV = (gcnew System::Windows::Forms::Label());
+			this->voltageValue = (gcnew System::Windows::Forms::Label());
+			this->polaritySign = (gcnew System::Windows::Forms::Label());
+			this->panel2 = (gcnew System::Windows::Forms::Panel());
+			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->groupBox1->SuspendLayout();
+			this->groupBox2->SuspendLayout();
+			this->panel1->SuspendLayout();
+			this->groupBox3->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
+			this->panel2->SuspendLayout();
+			this->SuspendLayout();
+			// 
+			// groupBox1
+			// 
+			this->groupBox1->BackColor = System::Drawing::SystemColors::AppWorkspace;
+			this->groupBox1->Controls->Add(this->btnExit);
+			this->groupBox1->Controls->Add(this->label2);
+			this->groupBox1->Controls->Add(this->label1);
+			this->groupBox1->Controls->Add(this->btnConnect);
+			this->groupBox1->Controls->Add(this->comboBox2);
+			this->groupBox1->Controls->Add(this->comboBox1);
+			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->groupBox1->Location = System::Drawing::Point(576, 12);
+			this->groupBox1->Name = L"groupBox1";
+			this->groupBox1->Size = System::Drawing::Size(218, 112);
+			this->groupBox1->TabIndex = 0;
+			this->groupBox1->TabStop = false;
+			this->groupBox1->Text = L"COM PORT SETTINGS";
+			// 
+			// btnExit
+			// 
+			this->btnExit->BackColor = System::Drawing::Color::Red;
+			this->btnExit->Location = System::Drawing::Point(109, 73);
+			this->btnExit->Name = L"btnExit";
+			this->btnExit->Size = System::Drawing::Size(103, 31);
+			this->btnExit->TabIndex = 2;
+			this->btnExit->Text = L"EXIT";
+			this->btnExit->UseVisualStyleBackColor = false;
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(16, 54);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(78, 13);
+			this->label2->TabIndex = 1;
+			this->label2->Text = L"BAUD RATE";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(16, 27);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(72, 13);
+			this->label1->TabIndex = 1;
+			this->label1->Text = L"COM PORT";
+			// 
+			// btnConnect
+			// 
+			this->btnConnect->BackColor = System::Drawing::Color::Green;
+			this->btnConnect->Location = System::Drawing::Point(6, 73);
+			this->btnConnect->Name = L"btnConnect";
+			this->btnConnect->Size = System::Drawing::Size(103, 31);
+			this->btnConnect->TabIndex = 2;
+			this->btnConnect->Text = L"CONNECT";
+			this->btnConnect->UseVisualStyleBackColor = false;
+			// 
+			// comboBox2
+			// 
+			this->comboBox2->FormattingEnabled = true;
+			this->comboBox2->Location = System::Drawing::Point(100, 46);
+			this->comboBox2->Name = L"comboBox2";
+			this->comboBox2->Size = System::Drawing::Size(109, 21);
+			this->comboBox2->TabIndex = 0;
+			// 
+			// comboBox1
+			// 
+			this->comboBox1->FormattingEnabled = true;
+			this->comboBox1->Location = System::Drawing::Point(100, 19);
+			this->comboBox1->Name = L"comboBox1";
+			this->comboBox1->Size = System::Drawing::Size(109, 21);
+			this->comboBox1->TabIndex = 0;
+			// 
+			// groupBox2
+			// 
+			this->groupBox2->BackColor = System::Drawing::SystemColors::AppWorkspace;
+			this->groupBox2->Controls->Add(this->btnClrLog);
+			this->groupBox2->Controls->Add(this->btnLog);
+			this->groupBox2->Controls->Add(this->btnHold);
+			this->groupBox2->Controls->Add(this->btnkV);
+			this->groupBox2->Controls->Add(this->btnmV);
+			this->groupBox2->Controls->Add(this->btnV);
+			this->groupBox2->Controls->Add(this->btnCalibrate);
+			this->groupBox2->Controls->Add(this->btnRead);
+			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->groupBox2->Location = System::Drawing::Point(576, 190);
+			this->groupBox2->Name = L"groupBox2";
+			this->groupBox2->Size = System::Drawing::Size(218, 190);
+			this->groupBox2->TabIndex = 1;
+			this->groupBox2->TabStop = false;
+			this->groupBox2->Text = L"CONTROLS";
+			// 
+			// btnClrLog
+			// 
+			this->btnClrLog->BackColor = System::Drawing::SystemColors::InfoText;
+			this->btnClrLog->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnClrLog->Location = System::Drawing::Point(6, 104);
+			this->btnClrLog->Name = L"btnClrLog";
+			this->btnClrLog->Size = System::Drawing::Size(97, 31);
+			this->btnClrLog->TabIndex = 3;
+			this->btnClrLog->Text = L"CLR LOG";
+			this->btnClrLog->UseVisualStyleBackColor = false;
+			// 
+			// btnLog
+			// 
+			this->btnLog->BackColor = System::Drawing::SystemColors::InfoText;
+			this->btnLog->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnLog->Location = System::Drawing::Point(115, 67);
+			this->btnLog->Name = L"btnLog";
+			this->btnLog->Size = System::Drawing::Size(97, 31);
+			this->btnLog->TabIndex = 3;
+			this->btnLog->Text = L"LOG";
+			this->btnLog->UseVisualStyleBackColor = false;
+			// 
+			// btnHold
+			// 
+			this->btnHold->BackColor = System::Drawing::Color::Orange;
+			this->btnHold->Location = System::Drawing::Point(115, 30);
+			this->btnHold->Name = L"btnHold";
+			this->btnHold->Size = System::Drawing::Size(97, 31);
+			this->btnHold->TabIndex = 3;
+			this->btnHold->Text = L"HOLD";
+			this->btnHold->UseVisualStyleBackColor = false;
+			// 
+			// btnkV
+			// 
+			this->btnkV->BackColor = System::Drawing::SystemColors::InfoText;
+			this->btnkV->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnkV->Location = System::Drawing::Point(115, 141);
+			this->btnkV->Name = L"btnkV";
+			this->btnkV->Size = System::Drawing::Size(97, 31);
+			this->btnkV->TabIndex = 3;
+			this->btnkV->Text = L"kV";
+			this->btnkV->UseVisualStyleBackColor = false;
+			// 
+			// btnmV
+			// 
+			this->btnmV->BackColor = System::Drawing::SystemColors::InfoText;
+			this->btnmV->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnmV->Location = System::Drawing::Point(115, 104);
+			this->btnmV->Name = L"btnmV";
+			this->btnmV->Size = System::Drawing::Size(97, 31);
+			this->btnmV->TabIndex = 3;
+			this->btnmV->Text = L"mV";
+			this->btnmV->UseVisualStyleBackColor = false;
+			// 
+			// btnV
+			// 
+			this->btnV->BackColor = System::Drawing::SystemColors::InfoText;
+			this->btnV->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnV->Location = System::Drawing::Point(6, 141);
+			this->btnV->Name = L"btnV";
+			this->btnV->Size = System::Drawing::Size(97, 31);
+			this->btnV->TabIndex = 3;
+			this->btnV->Text = L"V";
+			this->btnV->UseVisualStyleBackColor = false;
+			// 
+			// btnCalibrate
+			// 
+			this->btnCalibrate->BackColor = System::Drawing::SystemColors::InfoText;
+			this->btnCalibrate->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnCalibrate->Location = System::Drawing::Point(6, 67);
+			this->btnCalibrate->Name = L"btnCalibrate";
+			this->btnCalibrate->Size = System::Drawing::Size(97, 31);
+			this->btnCalibrate->TabIndex = 3;
+			this->btnCalibrate->Text = L"CALIBRATE";
+			this->btnCalibrate->UseVisualStyleBackColor = false;
+			// 
+			// btnRead
+			// 
+			this->btnRead->BackColor = System::Drawing::Color::Green;
+			this->btnRead->Location = System::Drawing::Point(6, 30);
+			this->btnRead->Name = L"btnRead";
+			this->btnRead->Size = System::Drawing::Size(97, 31);
+			this->btnRead->TabIndex = 3;
+			this->btnRead->Text = L"READ";
+			this->btnRead->UseVisualStyleBackColor = false;
+			// 
+			// btnStatus
+			// 
+			this->btnStatus->BackColor = System::Drawing::Color::Red;
+			this->btnStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btnStatus->Location = System::Drawing::Point(576, 130);
+			this->btnStatus->Name = L"btnStatus";
+			this->btnStatus->Size = System::Drawing::Size(218, 54);
+			this->btnStatus->TabIndex = 2;
+			this->btnStatus->Text = L"DISCONNECTED";
+			this->btnStatus->UseVisualStyleBackColor = false;
+			// 
+			// panel1
+			// 
+			this->panel1->BackColor = System::Drawing::SystemColors::ActiveCaption;
+			this->panel1->Controls->Add(this->mV);
+			this->panel1->Controls->Add(this->V);
+			this->panel1->Controls->Add(this->label8);
+			this->panel1->Controls->Add(this->kV);
+			this->panel1->Controls->Add(this->panel2);
+			this->panel1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->panel1->Location = System::Drawing::Point(12, 12);
+			this->panel1->Name = L"panel1";
+			this->panel1->Size = System::Drawing::Size(558, 161);
+			this->panel1->TabIndex = 3;
+			// 
+			// groupBox3
+			// 
+			this->groupBox3->BackColor = System::Drawing::SystemColors::AppWorkspace;
+			this->groupBox3->Controls->Add(this->dataGridView1);
+			this->groupBox3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->groupBox3->Location = System::Drawing::Point(12, 190);
+			this->groupBox3->Name = L"groupBox3";
+			this->groupBox3->Size = System::Drawing::Size(558, 190);
+			this->groupBox3->TabIndex = 4;
+			this->groupBox3->TabStop = false;
+			this->groupBox3->Text = L"DATABASE";
+			// 
+			// dataGridView1
+			// 
+			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(4) {
+				this->ID, this->voltage,
+					this->time, this->date
+			});
+			this->dataGridView1->Location = System::Drawing::Point(6, 19);
+			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->Size = System::Drawing::Size(546, 165);
+			this->dataGridView1->TabIndex = 0;
+			// 
+			// ID
+			// 
+			this->ID->HeaderText = L"ID";
+			this->ID->Name = L"ID";
+			this->ID->Width = 50;
+			// 
+			// voltage
+			// 
+			this->voltage->HeaderText = L"voltage";
+			this->voltage->Name = L"voltage";
+			this->voltage->Width = 150;
+			// 
+			// time
+			// 
+			this->time->HeaderText = L"time";
+			this->time->Name = L"time";
+			this->time->Width = 150;
+			// 
+			// date
+			// 
+			this->date->HeaderText = L"date";
+			this->date->Name = L"date";
+			this->date->Width = 150;
+			// 
+			// kV
+			// 
+			this->kV->AutoSize = true;
+			this->kV->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->kV->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->kV->Location = System::Drawing::Point(8, 82);
+			this->kV->Name = L"kV";
+			this->kV->Size = System::Drawing::Size(34, 22);
+			this->kV->TabIndex = 0;
+			this->kV->Text = L"kV ";
+			// 
+			// V
+			// 
+			this->V->AutoSize = true;
+			this->V->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->V->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->V->Location = System::Drawing::Point(8, 54);
+			this->V->Name = L"V";
+			this->V->Size = System::Drawing::Size(34, 22);
+			this->V->TabIndex = 0;
+			this->V->Text = L"V   ";
+			// 
+			// mV
+			// 
+			this->mV->AutoSize = true;
+			this->mV->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->mV->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->mV->Location = System::Drawing::Point(7, 27);
+			this->mV->Name = L"mV";
+			this->mV->Size = System::Drawing::Size(35, 22);
+			this->mV->TabIndex = 0;
+			this->mV->Text = L"mV";
+			// 
+			// voltageValue
+			// 
+			this->voltageValue->AutoSize = true;
+			this->voltageValue->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->voltageValue->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->voltageValue->Location = System::Drawing::Point(92, 7);
+			this->voltageValue->Name = L"voltageValue";
+			this->voltageValue->Size = System::Drawing::Size(337, 105);
+			this->voltageValue->TabIndex = 1;
+			this->voltageValue->Text = L"00.000";
+			// 
+			// polaritySign
+			// 
+			this->polaritySign->AutoSize = true;
+			this->polaritySign->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->polaritySign->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->polaritySign->Location = System::Drawing::Point(8, 7);
+			this->polaritySign->Name = L"polaritySign";
+			this->polaritySign->Size = System::Drawing::Size(100, 105);
+			this->polaritySign->TabIndex = 1;
+			this->polaritySign->Text = L"+";
+			// 
+			// panel2
+			// 
+			this->panel2->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->panel2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel2->Controls->Add(this->voltageValue);
+			this->panel2->Controls->Add(this->polaritySign);
+			this->panel2->Location = System::Drawing::Point(107, 19);
+			this->panel2->Name = L"panel2";
+			this->panel2->Size = System::Drawing::Size(445, 122);
+			this->panel2->TabIndex = 2;
+			// 
+			// label8
+			// 
+			this->label8->AutoSize = true;
+			this->label8->BackColor = System::Drawing::SystemColors::InfoText;
+			this->label8->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label8->ForeColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->label8->Location = System::Drawing::Point(0, 0);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(41, 22);
+			this->label8->TabIndex = 0;
+			this->label8->Text = L"DC ";
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(806, 406);
+			this->Controls->Add(this->groupBox3);
+			this->Controls->Add(this->panel1);
+			this->Controls->Add(this->groupBox2);
+			this->Controls->Add(this->groupBox1);
+			this->Controls->Add(this->btnStatus);
+			this->Name = L"MyForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+			this->Text = L"MyForm";
+			this->groupBox1->ResumeLayout(false);
+			this->groupBox1->PerformLayout();
+			this->groupBox2->ResumeLayout(false);
+			this->panel1->ResumeLayout(false);
+			this->panel1->PerformLayout();
+			this->groupBox3->ResumeLayout(false);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
+			this->panel2->ResumeLayout(false);
+			this->panel2->PerformLayout();
+			this->ResumeLayout(false);
+
+		}
+#pragma endregion
+	};
+}
