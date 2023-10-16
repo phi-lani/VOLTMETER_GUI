@@ -8,6 +8,7 @@ namespace VOLTMETERGUI {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::IO::Ports;
 
 	/// <summary>
 	/// Summary for MyForm
@@ -42,8 +43,9 @@ namespace VOLTMETERGUI {
 	private: System::Windows::Forms::Button^ btnExit;
 
 	private: System::Windows::Forms::Button^ btnConnect;
+	private: System::Windows::Forms::GroupBox^ controls;
 
-	private: System::Windows::Forms::GroupBox^ groupBox2;
+
 	private: System::Windows::Forms::Button^ btnRead;
 	private: System::Windows::Forms::Button^ btnStatus;
 
@@ -83,6 +85,9 @@ namespace VOLTMETERGUI {
 
 	private: System::Windows::Forms::Panel^ panel2;
 	private: System::Windows::Forms::Label^ label8;
+	private: System::IO::Ports::SerialPort^ serialPort1;
+	private: System::Windows::Forms::Timer^ readTimer;
+	private: System::ComponentModel::IContainer^ components;
 
 
 
@@ -100,7 +105,7 @@ namespace VOLTMETERGUI {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -109,6 +114,7 @@ namespace VOLTMETERGUI {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->btnExit = (gcnew System::Windows::Forms::Button());
 			this->label2 = (gcnew System::Windows::Forms::Label());
@@ -116,7 +122,7 @@ namespace VOLTMETERGUI {
 			this->btnConnect = (gcnew System::Windows::Forms::Button());
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
-			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->controls = (gcnew System::Windows::Forms::GroupBox());
 			this->btnClrLog = (gcnew System::Windows::Forms::Button());
 			this->btnLog = (gcnew System::Windows::Forms::Button());
 			this->btnHold = (gcnew System::Windows::Forms::Button());
@@ -127,25 +133,27 @@ namespace VOLTMETERGUI {
 			this->btnRead = (gcnew System::Windows::Forms::Button());
 			this->btnStatus = (gcnew System::Windows::Forms::Button());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->mV = (gcnew System::Windows::Forms::Label());
+			this->V = (gcnew System::Windows::Forms::Label());
+			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->kV = (gcnew System::Windows::Forms::Label());
+			this->panel2 = (gcnew System::Windows::Forms::Panel());
+			this->voltageValue = (gcnew System::Windows::Forms::Label());
+			this->polaritySign = (gcnew System::Windows::Forms::Label());
 			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->ID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->voltage = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->time = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->date = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->kV = (gcnew System::Windows::Forms::Label());
-			this->V = (gcnew System::Windows::Forms::Label());
-			this->mV = (gcnew System::Windows::Forms::Label());
-			this->voltageValue = (gcnew System::Windows::Forms::Label());
-			this->polaritySign = (gcnew System::Windows::Forms::Label());
-			this->panel2 = (gcnew System::Windows::Forms::Panel());
-			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->serialPort1 = (gcnew System::IO::Ports::SerialPort(this->components));
+			this->readTimer = (gcnew System::Windows::Forms::Timer(this->components));
 			this->groupBox1->SuspendLayout();
-			this->groupBox2->SuspendLayout();
+			this->controls->SuspendLayout();
 			this->panel1->SuspendLayout();
+			this->panel2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
-			this->panel2->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// groupBox1
@@ -175,6 +183,7 @@ namespace VOLTMETERGUI {
 			this->btnExit->TabIndex = 2;
 			this->btnExit->Text = L"EXIT";
 			this->btnExit->UseVisualStyleBackColor = false;
+			this->btnExit->Click += gcnew System::EventHandler(this, &MyForm::btnExit_Click);
 			// 
 			// label2
 			// 
@@ -203,9 +212,11 @@ namespace VOLTMETERGUI {
 			this->btnConnect->TabIndex = 2;
 			this->btnConnect->Text = L"CONNECT";
 			this->btnConnect->UseVisualStyleBackColor = false;
+			this->btnConnect->Click += gcnew System::EventHandler(this, &MyForm::btnConnect_Click);
 			// 
 			// comboBox2
 			// 
+			this->comboBox2->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->comboBox2->FormattingEnabled = true;
 			this->comboBox2->Location = System::Drawing::Point(100, 46);
 			this->comboBox2->Name = L"comboBox2";
@@ -214,36 +225,37 @@ namespace VOLTMETERGUI {
 			// 
 			// comboBox1
 			// 
+			this->comboBox1->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->comboBox1->FormattingEnabled = true;
 			this->comboBox1->Location = System::Drawing::Point(100, 19);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(109, 21);
 			this->comboBox1->TabIndex = 0;
 			// 
-			// groupBox2
+			// controls
 			// 
-			this->groupBox2->BackColor = System::Drawing::SystemColors::AppWorkspace;
-			this->groupBox2->Controls->Add(this->btnClrLog);
-			this->groupBox2->Controls->Add(this->btnLog);
-			this->groupBox2->Controls->Add(this->btnHold);
-			this->groupBox2->Controls->Add(this->btnkV);
-			this->groupBox2->Controls->Add(this->btnmV);
-			this->groupBox2->Controls->Add(this->btnV);
-			this->groupBox2->Controls->Add(this->btnCalibrate);
-			this->groupBox2->Controls->Add(this->btnRead);
-			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->controls->BackColor = System::Drawing::SystemColors::AppWorkspace;
+			this->controls->Controls->Add(this->btnClrLog);
+			this->controls->Controls->Add(this->btnLog);
+			this->controls->Controls->Add(this->btnHold);
+			this->controls->Controls->Add(this->btnkV);
+			this->controls->Controls->Add(this->btnmV);
+			this->controls->Controls->Add(this->btnV);
+			this->controls->Controls->Add(this->btnCalibrate);
+			this->controls->Controls->Add(this->btnRead);
+			this->controls->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->groupBox2->Location = System::Drawing::Point(576, 190);
-			this->groupBox2->Name = L"groupBox2";
-			this->groupBox2->Size = System::Drawing::Size(218, 190);
-			this->groupBox2->TabIndex = 1;
-			this->groupBox2->TabStop = false;
-			this->groupBox2->Text = L"CONTROLS";
+			this->controls->Location = System::Drawing::Point(576, 190);
+			this->controls->Name = L"controls";
+			this->controls->Size = System::Drawing::Size(218, 190);
+			this->controls->TabIndex = 1;
+			this->controls->TabStop = false;
+			this->controls->Text = L"CONTROLS";
 			// 
 			// btnClrLog
 			// 
 			this->btnClrLog->BackColor = System::Drawing::SystemColors::InfoText;
-			this->btnClrLog->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnClrLog->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->btnClrLog->Location = System::Drawing::Point(6, 104);
 			this->btnClrLog->Name = L"btnClrLog";
 			this->btnClrLog->Size = System::Drawing::Size(97, 31);
@@ -254,7 +266,7 @@ namespace VOLTMETERGUI {
 			// btnLog
 			// 
 			this->btnLog->BackColor = System::Drawing::SystemColors::InfoText;
-			this->btnLog->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnLog->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->btnLog->Location = System::Drawing::Point(115, 67);
 			this->btnLog->Name = L"btnLog";
 			this->btnLog->Size = System::Drawing::Size(97, 31);
@@ -275,7 +287,7 @@ namespace VOLTMETERGUI {
 			// btnkV
 			// 
 			this->btnkV->BackColor = System::Drawing::SystemColors::InfoText;
-			this->btnkV->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnkV->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->btnkV->Location = System::Drawing::Point(115, 141);
 			this->btnkV->Name = L"btnkV";
 			this->btnkV->Size = System::Drawing::Size(97, 31);
@@ -286,7 +298,7 @@ namespace VOLTMETERGUI {
 			// btnmV
 			// 
 			this->btnmV->BackColor = System::Drawing::SystemColors::InfoText;
-			this->btnmV->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnmV->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->btnmV->Location = System::Drawing::Point(115, 104);
 			this->btnmV->Name = L"btnmV";
 			this->btnmV->Size = System::Drawing::Size(97, 31);
@@ -297,7 +309,7 @@ namespace VOLTMETERGUI {
 			// btnV
 			// 
 			this->btnV->BackColor = System::Drawing::SystemColors::InfoText;
-			this->btnV->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnV->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->btnV->Location = System::Drawing::Point(6, 141);
 			this->btnV->Name = L"btnV";
 			this->btnV->Size = System::Drawing::Size(97, 31);
@@ -308,7 +320,7 @@ namespace VOLTMETERGUI {
 			// btnCalibrate
 			// 
 			this->btnCalibrate->BackColor = System::Drawing::SystemColors::InfoText;
-			this->btnCalibrate->ForeColor = System::Drawing::SystemColors::HighlightText;
+			this->btnCalibrate->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->btnCalibrate->Location = System::Drawing::Point(6, 67);
 			this->btnCalibrate->Name = L"btnCalibrate";
 			this->btnCalibrate->Size = System::Drawing::Size(97, 31);
@@ -325,10 +337,12 @@ namespace VOLTMETERGUI {
 			this->btnRead->TabIndex = 3;
 			this->btnRead->Text = L"READ";
 			this->btnRead->UseVisualStyleBackColor = false;
+			this->btnRead->Click += gcnew System::EventHandler(this, &MyForm::btnRead_Click);
 			// 
 			// btnStatus
 			// 
 			this->btnStatus->BackColor = System::Drawing::Color::Red;
+			this->btnStatus->Enabled = false;
 			this->btnStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->btnStatus->Location = System::Drawing::Point(576, 130);
@@ -350,8 +364,93 @@ namespace VOLTMETERGUI {
 				static_cast<System::Byte>(0)));
 			this->panel1->Location = System::Drawing::Point(12, 12);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(558, 161);
+			this->panel1->Size = System::Drawing::Size(558, 172);
 			this->panel1->TabIndex = 3;
+			// 
+			// mV
+			// 
+			this->mV->AutoSize = true;
+			this->mV->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->mV->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->mV->Location = System::Drawing::Point(7, 27);
+			this->mV->Name = L"mV";
+			this->mV->Size = System::Drawing::Size(35, 22);
+			this->mV->TabIndex = 0;
+			this->mV->Text = L"mV";
+			// 
+			// V
+			// 
+			this->V->AutoSize = true;
+			this->V->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->V->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->V->Location = System::Drawing::Point(8, 54);
+			this->V->Name = L"V";
+			this->V->Size = System::Drawing::Size(34, 22);
+			this->V->TabIndex = 0;
+			this->V->Text = L"V   ";
+			// 
+			// label8
+			// 
+			this->label8->AutoSize = true;
+			this->label8->BackColor = System::Drawing::SystemColors::InfoText;
+			this->label8->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label8->ForeColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->label8->Location = System::Drawing::Point(0, 0);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(41, 22);
+			this->label8->TabIndex = 0;
+			this->label8->Text = L"DC ";
+			// 
+			// kV
+			// 
+			this->kV->AutoSize = true;
+			this->kV->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->kV->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->kV->Location = System::Drawing::Point(8, 82);
+			this->kV->Name = L"kV";
+			this->kV->Size = System::Drawing::Size(34, 22);
+			this->kV->TabIndex = 0;
+			this->kV->Text = L"kV ";
+			// 
+			// panel2
+			// 
+			this->panel2->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->panel2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel2->Controls->Add(this->voltageValue);
+			this->panel2->Controls->Add(this->polaritySign);
+			this->panel2->Location = System::Drawing::Point(48, 27);
+			this->panel2->Name = L"panel2";
+			this->panel2->Size = System::Drawing::Size(504, 122);
+			this->panel2->TabIndex = 2;
+			// 
+			// voltageValue
+			// 
+			this->voltageValue->AutoSize = true;
+			this->voltageValue->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->voltageValue->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->voltageValue->Location = System::Drawing::Point(92, 7);
+			this->voltageValue->Name = L"voltageValue";
+			this->voltageValue->Size = System::Drawing::Size(337, 105);
+			this->voltageValue->TabIndex = 1;
+			this->voltageValue->Text = L"00.000";
+			// 
+			// polaritySign
+			// 
+			this->polaritySign->AutoSize = true;
+			this->polaritySign->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->polaritySign->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->polaritySign->Location = System::Drawing::Point(8, 7);
+			this->polaritySign->Name = L"polaritySign";
+			this->polaritySign->Size = System::Drawing::Size(100, 105);
+			this->polaritySign->TabIndex = 1;
+			this->polaritySign->Text = L"+";
 			// 
 			// groupBox3
 			// 
@@ -402,116 +501,123 @@ namespace VOLTMETERGUI {
 			this->date->Name = L"date";
 			this->date->Width = 150;
 			// 
-			// kV
+			// serialPort1
 			// 
-			this->kV->AutoSize = true;
-			this->kV->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->kV->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->kV->Location = System::Drawing::Point(8, 82);
-			this->kV->Name = L"kV";
-			this->kV->Size = System::Drawing::Size(34, 22);
-			this->kV->TabIndex = 0;
-			this->kV->Text = L"kV ";
+			this->serialPort1->ReadTimeout = 30;
+			this->serialPort1->WriteTimeout = 23;
 			// 
-			// V
+			// readTimer
 			// 
-			this->V->AutoSize = true;
-			this->V->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->V->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->V->Location = System::Drawing::Point(8, 54);
-			this->V->Name = L"V";
-			this->V->Size = System::Drawing::Size(34, 22);
-			this->V->TabIndex = 0;
-			this->V->Text = L"V   ";
-			// 
-			// mV
-			// 
-			this->mV->AutoSize = true;
-			this->mV->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->mV->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->mV->Location = System::Drawing::Point(7, 27);
-			this->mV->Name = L"mV";
-			this->mV->Size = System::Drawing::Size(35, 22);
-			this->mV->TabIndex = 0;
-			this->mV->Text = L"mV";
-			// 
-			// voltageValue
-			// 
-			this->voltageValue->AutoSize = true;
-			this->voltageValue->BackColor = System::Drawing::SystemColors::ButtonHighlight;
-			this->voltageValue->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->voltageValue->Location = System::Drawing::Point(92, 7);
-			this->voltageValue->Name = L"voltageValue";
-			this->voltageValue->Size = System::Drawing::Size(337, 105);
-			this->voltageValue->TabIndex = 1;
-			this->voltageValue->Text = L"00.000";
-			// 
-			// polaritySign
-			// 
-			this->polaritySign->AutoSize = true;
-			this->polaritySign->BackColor = System::Drawing::SystemColors::ButtonHighlight;
-			this->polaritySign->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->polaritySign->Location = System::Drawing::Point(8, 7);
-			this->polaritySign->Name = L"polaritySign";
-			this->polaritySign->Size = System::Drawing::Size(100, 105);
-			this->polaritySign->TabIndex = 1;
-			this->polaritySign->Text = L"+";
-			// 
-			// panel2
-			// 
-			this->panel2->BackColor = System::Drawing::SystemColors::ButtonHighlight;
-			this->panel2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->panel2->Controls->Add(this->voltageValue);
-			this->panel2->Controls->Add(this->polaritySign);
-			this->panel2->Location = System::Drawing::Point(107, 19);
-			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(445, 122);
-			this->panel2->TabIndex = 2;
-			// 
-			// label8
-			// 
-			this->label8->AutoSize = true;
-			this->label8->BackColor = System::Drawing::SystemColors::InfoText;
-			this->label8->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label8->ForeColor = System::Drawing::SystemColors::ButtonHighlight;
-			this->label8->Location = System::Drawing::Point(0, 0);
-			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(41, 22);
-			this->label8->TabIndex = 0;
-			this->label8->Text = L"DC ";
+			this->readTimer->Tick += gcnew System::EventHandler(this, &MyForm::readTimer_Tick);
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(806, 406);
+			this->ClientSize = System::Drawing::Size(806, 389);
 			this->Controls->Add(this->groupBox3);
 			this->Controls->Add(this->panel1);
-			this->Controls->Add(this->groupBox2);
+			this->Controls->Add(this->controls);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->btnStatus);
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			this->Text = L"MyForm";
+			this->Text = L"DC Dual-Slope-Integration Voltmeter";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
-			this->groupBox2->ResumeLayout(false);
+			this->controls->ResumeLayout(false);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
-			this->groupBox3->ResumeLayout(false);
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->panel2->ResumeLayout(false);
 			this->panel2->PerformLayout();
+			this->groupBox3->ResumeLayout(false);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
-	};
+	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+		//When the windows form starts it will get the available ports, populate the comboBox.
+		array<Object^>^ arrayOBJ = SerialPort::GetPortNames();
+		this->comboBox1->Items->AddRange(arrayOBJ);
+
+		//When the windows form starts it will load the comboBox with the baudrate options.
+		array<Object^>^ baudRates = { 9600, 57600, 115200 };
+		this->comboBox2->Items->AddRange(baudRates);
+
+		controls->Enabled = false;
+		readTimer->Enabled = false;
+	}
+	private: void enableCtrls() {
+		controls->Enabled = true;
+	}
+
+	private: void disableCtrls() {
+		controls->Enabled = false;
+	}
+
+	private: void connect() {
+		bool conError= false;
+		if (comboBox1->SelectedIndex != -1 && comboBox2->SelectedIndex != -1) {
+			try
+			{
+				if (!(this->serialPort1->IsOpen)) {
+					this->serialPort1->PortName = comboBox1->Text;
+					this->serialPort1->BaudRate = Int32::Parse(comboBox2->Text);
+
+					readTimer->Enabled = false;
+					this->serialPort1->Open();
+					btnStatus->Text = "CONNECTED";
+					btnStatus->BackColor = System::Drawing::Color::Green;
+					enableCtrls();
+				}
+			}
+			catch (UnauthorizedAccessException^) { conError = true; }
+			catch (System::IO::IOException^) { conError = true; }
+			catch (ArgumentException^) { conError = true; }
+			if (conError) MessageBox::Show(this, "Could not open COM port. Port could be in use!");
+		}
+		else {
+			MessageBox::Show("Please select all COM Port settings");
+		}
+		
+	}
+
+	private: void disconnect() {
+		this->serialPort1->Close();
+		btnStatus->Text = "DISCONNECTED";
+		btnStatus->BackColor = System::Drawing::Color::Red;
+		disableCtrls();
+	}
+private: System::Void btnConnect_Click(System::Object^ sender, System::EventArgs^ e) {
+	connect();
+}
+private: System::Void btnExit_Click(System::Object^ sender, System::EventArgs^ e) {
+	disconnect();
+}
+
+
+
+
+private: System::Void btnRead_Click(System::Object^ sender, System::EventArgs^ e) {
+	readTimer->Enabled = true;
+	serialPort1->DiscardInBuffer();
+	serialPort1->DiscardOutBuffer();
+}
+
+private: System::Void readTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
+	if (serialPort1->IsOpen) {
+		try
+		{
+			String^ incomingData = serialPort1->ReadExisting();
+			//voltageValue->Text = incomingData;
+		}
+		catch (System::Exception^ ex)
+		{
+			MessageBox::Show("Could not read from the serial port: " + ex->Message);
+		}
+	}
+}
+};
 }
