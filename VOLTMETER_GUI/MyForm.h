@@ -1,4 +1,9 @@
 #pragma once
+#pragma once
+#include <iostream>
+#include<string>
+#include <string.h>
+#include <cctype>
 
 namespace VOLTMETERGUI {
 
@@ -9,13 +14,21 @@ namespace VOLTMETERGUI {
 	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace System::IO::Ports;
+	using namespace System::Data::SqlClient;
+	using namespace System::Runtime::InteropServices;
 
+
+	std::string stringValue;
+	int count;
+	bool isComplete;
+	
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	public:
+		String^ signPtr;
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -35,6 +48,26 @@ namespace VOLTMETERGUI {
 				delete components;
 			}
 		}
+
+void EstablishDatabaseConnection()  {
+String^ DBconn = "Data Source=localhost\\sqlexpress;Initial Catalog=SmartDB;Integrated Security=True";
+		   SqlConnection^ sqlConn = gcnew SqlConnection(DBconn);
+
+		   try
+		   {
+			   sqlConn->Open();
+			   
+		   }
+		   catch (SqlException^ ex)
+		   {
+			   // Handle any exceptions related to the database connection
+			   MessageBox::Show("Database connection error: " + ex->Message);
+		   }
+		   finally
+		   {
+			   sqlConn->Close();
+		   }
+}
 	private: System::Windows::Forms::GroupBox^ groupBox1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label1;
@@ -537,6 +570,7 @@ namespace VOLTMETERGUI {
 
 		}
 #pragma endregion
+	
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 		//When the windows form starts it will get the available ports, populate the comboBox.
 		array<Object^>^ arrayOBJ = SerialPort::GetPortNames();
@@ -590,15 +624,98 @@ namespace VOLTMETERGUI {
 		btnStatus->BackColor = System::Drawing::Color::Red;
 		disableCtrls();
 	}
+
+private: std::string getValue(String^ tmp1) {
+	char* p = (char*)(Marshal::StringToHGlobalAnsi(tmp1)).ToPointer();
+	std::string str = p;
+	Marshal::FreeHGlobal((IntPtr)p);
+	return str;
+}
+
+private: int CountDigitsInString(const std::string& inputString) {
+	int numberOfDigits = 0;
+
+	for (char c : inputString) {
+		if (std::isdigit(c)) {
+			numberOfDigits++;
+		}
+	}
+
+	return numberOfDigits;
+}
+
+private: bool IsCompleteMessage(const std::string& message) {
+	return message.find('\n') != std::string::npos;
+}
+
+private: void processData(int count, bool isComplete, std::string stringValue) {
+	int ADC = 0;
+	double value;
+	double gradient;
+	double offset;
+	double actualError;
+	double voltage;
+	String^ strValue;
+
+	gradient = (1023 - 0) / (12 - 0.005);
+	offset = 1023 - (gradient * 12);
+
+	if (isComplete) {
+		std::string sign, refVolt, adcValue;
+		int SubStrCount = 0;
+
+		if (count == 4) {
+			sign = stringValue.substr(0, 1);
+			refVolt = stringValue.substr(1, 1);
+			adcValue = stringValue.substr(2, 2);
+			SubStrCount = 2;
+		}
+
+		if (count == 5) {
+			sign = stringValue.substr(0, 1);
+			refVolt = stringValue.substr(1, 1);
+			adcValue = stringValue.substr(2, 3);
+			SubStrCount = 3;
+		}
+
+		if (count == 6) {
+			sign = stringValue.substr(0, 1);
+			refVolt = stringValue.substr(1, 1);
+			adcValue = stringValue.substr(2, 4);
+			SubStrCount = 4;
+		}
+
+		signPtr = gcnew String(sign.data());
+
+		if (isComplete == true && refVolt.length() == 1) {
+			if (CountDigitsInString(adcValue) == SubStrCount && stoi(refVolt) == 5) {
+				value = ADC * (0.00488);
+				value = value / 1000;
+
+				std::string StrValue = std::to_string(value);
+				voltage = (ADC - offset) / gradient;
+				actualError = (voltage - (ADC * 0.01173));
+				std::string SubStrValue = StrValue.substr(0, 7);
+				strValue = gcnew String(SubStrValue.data());
+				voltageValue->Text = strValue;
+			}
+		}
+
+	}
+}
+
+
 private: System::Void btnConnect_Click(System::Object^ sender, System::EventArgs^ e) {
 	connect();
+
+	//System::DateTime dateTime = DateTime::Now;
+	//System::String^ dateTimeString = dateTime.ToString();
+	//System::String^ dateOnly = dateTime.ToString("yyyy-MM-dd");
+	//System::String^ timeOnly = dateTime.ToString("HH:mm");
 }
 private: System::Void btnExit_Click(System::Object^ sender, System::EventArgs^ e) {
 	disconnect();
 }
-
-
-
 
 private: System::Void btnRead_Click(System::Object^ sender, System::EventArgs^ e) {
 	readTimer->Enabled = true;
@@ -611,7 +728,10 @@ private: System::Void readTimer_Tick(System::Object^ sender, System::EventArgs^ 
 		try
 		{
 			String^ incomingData = serialPort1->ReadExisting();
-			//voltageValue->Text = incomingData;
+			stringValue = getValue(incomingData);
+			count = CountDigitsInString(stringValue);
+			isComplete= IsCompleteMessage(stringValue);
+			processData(count, isComplete, stringValue);
 		}
 		catch (System::Exception^ ex)
 		{
@@ -619,5 +739,6 @@ private: System::Void readTimer_Tick(System::Object^ sender, System::EventArgs^ 
 		}
 	}
 }
+
 };
 }
