@@ -685,16 +685,16 @@ private: void processData(int count, bool isComplete, std::string stringValue) {
 			SubStrCount = 4;
 		}
 
+		ADC = std::stoi(adcValue);
 		signPtr = gcnew String(sign.data());
 
 		if (isComplete == true && refVolt.length() == 1) {
 			if (CountDigitsInString(adcValue) == SubStrCount && stoi(refVolt) == 5) {
 				value = ADC * (0.00488);
-				value = value / 1000;
 
 				std::string StrValue = std::to_string(value);
-				voltage = (ADC - offset) / gradient;
-				actualError = (voltage - (ADC * 0.01173));
+				//voltage = (ADC - offset) / gradient;
+				//actualError = (voltage - (ADC * 0.01173));
 				std::string SubStrValue = StrValue.substr(0, 7);
 				strValue = gcnew String(SubStrValue.data());
 				voltageValue->Text = strValue;
