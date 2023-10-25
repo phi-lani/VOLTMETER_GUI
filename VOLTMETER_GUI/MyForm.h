@@ -1,12 +1,12 @@
 #pragma once
-#pragma once
 #include <iostream>
 #include<string>
 #include <string.h>
 #include <cctype>
+#include <sstream> 
 
 namespace VOLTMETERGUI {
-
+	int ID = 1;
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -49,25 +49,37 @@ namespace VOLTMETERGUI {
 			}
 		}
 
-void EstablishDatabaseConnection()  {
-String^ DBconn = "Data Source=localhost\\sqlexpress;Initial Catalog=SmartDB;Integrated Security=True";
-		   SqlConnection^ sqlConn = gcnew SqlConnection(DBconn);
+//System::DateTime dateTime = DateTime::Now;
+//System::String^ dateTimeString = dateTime.ToString();
+//System::String^ dateOnly = dateTime.ToString("yyyy-MM-dd");
+//System::String^ timeOnly = dateTime.ToString("HH:mm");
+////int ID = 0;
 
-		   try
-		   {
-			   sqlConn->Open();
-			   
-		   }
-		   catch (SqlException^ ex)
-		   {
-			   // Handle any exceptions related to the database connection
-			   MessageBox::Show("Database connection error: " + ex->Message);
-		   }
-		   finally
-		   {
-			   sqlConn->Close();
-		   }
+	private:void InsertTemperatureReading(double voltage) {
+			String^ connectionString = "Data Source=localhost\\sqlexpress;Initial Catalog=voltageReadings;Integrated Security=True"; // Replace with your actual connection string
+			SqlConnection^ sqlConn = gcnew SqlConnection(connectionString);
+
+			try {
+				sqlConn->Open();
+				String^ sqlQuery = "INSERT INTO voltages(voltage, time, date) VALUES (@voltage, @time, @date)";
+				SqlCommand^ command = gcnew SqlCommand(sqlQuery, sqlConn);
+
+				command->Parameters->AddWithValue("@voltage", voltage);
+				command->Parameters->AddWithValue("@time", DateTime::Now);
+				command->Parameters->AddWithValue("@date", DateTime::Now);
+
+				command->ExecuteNonQuery();
+			}
+			catch (Exception^ ex) {
+				// Handle any exceptions here
+				Console::WriteLine(ex->Message);
+			}
+			finally {
+				sqlConn->Close();
+			}
 }
+
+
 	private: System::Windows::Forms::GroupBox^ groupBox1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label1;
@@ -145,6 +157,7 @@ String^ DBconn = "Data Source=localhost\\sqlexpress;Initial Catalog=SmartDB;Inte
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
+		
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
@@ -360,6 +373,7 @@ String^ DBconn = "Data Source=localhost\\sqlexpress;Initial Catalog=SmartDB;Inte
 			this->btnCalibrate->TabIndex = 3;
 			this->btnCalibrate->Text = L"CALIBRATE";
 			this->btnCalibrate->UseVisualStyleBackColor = false;
+			this->btnCalibrate->Click += gcnew System::EventHandler(this, &MyForm::btnCalibrate_Click);
 			// 
 			// btnRead
 			// 
@@ -541,6 +555,7 @@ String^ DBconn = "Data Source=localhost\\sqlexpress;Initial Catalog=SmartDB;Inte
 			// 
 			// readTimer
 			// 
+			this->readTimer->Interval = 1;
 			this->readTimer->Tick += gcnew System::EventHandler(this, &MyForm::readTimer_Tick);
 			// 
 			// MyForm
@@ -684,34 +699,42 @@ private: void processData(int count, bool isComplete, std::string stringValue) {
 			adcValue = stringValue.substr(2, 4);
 			SubStrCount = 4;
 		}
-
-		ADC = std::stoi(adcValue);
-		signPtr = gcnew String(sign.data());
-
+		char* adcPtr;
+		char* polarityPtr;
+		adcPtr = &adcValue[0];
+		polarityPtr = &sign[0];
+		ADC = std::atoi(adcPtr);
+		int polarity = std::atoi(polarityPtr);
+		this->polaritySign->Text = (polarity == 1) ? "+" : "-";
+		Console::WriteLine(polaritySign);
+		
 		if (isComplete == true && refVolt.length() == 1) {
 			if (CountDigitsInString(adcValue) == SubStrCount && stoi(refVolt) == 5) {
 				value = ADC * (0.00488);
 
 				std::string StrValue = std::to_string(value);
-				//voltage = (ADC - offset) / gradient;
+				voltage = (ADC - offset) / gradient;
+				//std::string StrValue = std::to_string(voltage);
 				//actualError = (voltage - (ADC * 0.01173));
 				std::string SubStrValue = StrValue.substr(0, 7);
 				strValue = gcnew String(SubStrValue.data());
 				voltageValue->Text = strValue;
+				InsertTemperatureReading(voltage);
+				//dataGridView1->Rows->Add(ID++, value, timeOnly, dateOnly);
 			}
 		}
 
 	}
 }
 
+//Server=localhost\SQLEXPRESS01;Database=master;Trusted_Connection=True;
+
+
+
+
 
 private: System::Void btnConnect_Click(System::Object^ sender, System::EventArgs^ e) {
 	connect();
-
-	//System::DateTime dateTime = DateTime::Now;
-	//System::String^ dateTimeString = dateTime.ToString();
-	//System::String^ dateOnly = dateTime.ToString("yyyy-MM-dd");
-	//System::String^ timeOnly = dateTime.ToString("HH:mm");
 }
 private: System::Void btnExit_Click(System::Object^ sender, System::EventArgs^ e) {
 	disconnect();
@@ -725,20 +748,23 @@ private: System::Void btnRead_Click(System::Object^ sender, System::EventArgs^ e
 
 private: System::Void readTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
 	if (serialPort1->IsOpen) {
-		try
-		{
+		//try
+		//{
 			String^ incomingData = serialPort1->ReadExisting();
 			stringValue = getValue(incomingData);
 			count = CountDigitsInString(stringValue);
 			isComplete= IsCompleteMessage(stringValue);
 			processData(count, isComplete, stringValue);
-		}
-		catch (System::Exception^ ex)
-		{
-			MessageBox::Show("Could not read from the serial port: " + ex->Message);
-		}
+		//}
+		//catch (System::Exception^ ex)
+		//{
+		//	MessageBox::Show("Could not read from the serial port: " + ex->Message);
+		//}
 	}
 }
 
+private: System::Void btnCalibrate_Click(System::Object^ sender, System::EventArgs^ e) {
+
+}
 };
 }
