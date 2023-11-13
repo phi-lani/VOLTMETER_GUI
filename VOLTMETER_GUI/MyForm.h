@@ -6,7 +6,7 @@
 #include <sstream> 
 
 namespace VOLTMETERGUI {
-	int ID = 1;
+	//int ID = 1;
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -47,23 +47,26 @@ namespace VOLTMETERGUI {
 			{
 				delete components;
 			}
+
+
+
 		}
+int id = 1;
+System::DateTime dateTime = DateTime::Now;
+System::String^ dateTimeString = dateTime.ToString();
+System::String^ dateOnly = dateTime.ToString("yyyy-MM-dd");
+System::String^ timeOnly = dateTime.ToString("HH:mm");
 
-//System::DateTime dateTime = DateTime::Now;
-//System::String^ dateTimeString = dateTime.ToString();
-//System::String^ dateOnly = dateTime.ToString("yyyy-MM-dd");
-//System::String^ timeOnly = dateTime.ToString("HH:mm");
-////int ID = 0;
 
-	private:void InsertTemperatureReading(double voltage) {
-			String^ connectionString = "Data Source=localhost\\sqlexpress;Initial Catalog=voltageReadings;Integrated Security=True"; // Replace with your actual connection string
+	private:void InsertTemperatureReading(char sign,double voltage) {
+	String^ connectionString = "Data Source=localhost\\sqlexpress;Initial Catalog=voltageReadings;Integrated Security=True"; // Replace with your actual connection string
 			SqlConnection^ sqlConn = gcnew SqlConnection(connectionString);
 
 			try {
 				sqlConn->Open();
-				String^ sqlQuery = "INSERT INTO voltages(voltage, time, date) VALUES (@voltage, @time, @date)";
+				String^ sqlQuery = "INSERT INTO voltage(sign, voltage, time, date) VALUES (@sign,@voltage, @time, @date)";
 				SqlCommand^ command = gcnew SqlCommand(sqlQuery, sqlConn);
-
+				command->Parameters->AddWithValue("@sign", sign);
 				command->Parameters->AddWithValue("@voltage", voltage);
 				command->Parameters->AddWithValue("@time", DateTime::Now);
 				command->Parameters->AddWithValue("@date", DateTime::Now);
@@ -489,15 +492,14 @@ namespace VOLTMETERGUI {
 			// 
 			// polaritySign
 			// 
-			this->polaritySign->AutoSize = true;
 			this->polaritySign->BackColor = System::Drawing::SystemColors::ButtonHighlight;
 			this->polaritySign->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 69.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->polaritySign->Location = System::Drawing::Point(8, 7);
+			this->polaritySign->Location = System::Drawing::Point(42, 7);
 			this->polaritySign->Name = L"polaritySign";
-			this->polaritySign->Size = System::Drawing::Size(100, 105);
+			this->polaritySign->Size = System::Drawing::Size(67, 105);
 			this->polaritySign->TabIndex = 1;
-			this->polaritySign->Text = L"+";
+			this->polaritySign->Text = L"-";
 			// 
 			// groupBox3
 			// 
@@ -585,7 +587,7 @@ namespace VOLTMETERGUI {
 
 		}
 #pragma endregion
-	
+	private:	int sign;
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 		//When the windows form starts it will get the available ports, populate the comboBox.
 		array<Object^>^ arrayOBJ = SerialPort::GetPortNames();
@@ -663,7 +665,7 @@ private: bool IsCompleteMessage(const std::string& message) {
 	return message.find('\n') != std::string::npos;
 }
 
-private: void processData(int count, bool isComplete, std::string stringValue) {
+private: int processData(int count, bool isComplete, std::string stringValue) {
 	int ADC = 0;
 	double value;
 	double gradient;
@@ -671,6 +673,7 @@ private: void processData(int count, bool isComplete, std::string stringValue) {
 	double actualError;
 	double voltage;
 	String^ strValue;
+	int polarity = 1;
 
 	gradient = (1023 - 0) / (12 - 0.005);
 	offset = 1023 - (gradient * 12);
@@ -704,9 +707,16 @@ private: void processData(int count, bool isComplete, std::string stringValue) {
 		adcPtr = &adcValue[0];
 		polarityPtr = &sign[0];
 		ADC = std::atoi(adcPtr);
-		int polarity = std::atoi(polarityPtr);
-		this->polaritySign->Text = (polarity == 1) ? "+" : "-";
-		Console::WriteLine(polaritySign);
+		polarity = std::atoi(polarityPtr);
+
+		/*if (polarity == 1) {
+			polaritySign->Hide();
+			
+		}
+		else if (polarity == 0) {
+			polaritySign->Show();
+			
+		}*/
 		
 		if (isComplete == true && refVolt.length() == 1) {
 			if (CountDigitsInString(adcValue) == SubStrCount && stoi(refVolt) == 5) {
@@ -714,24 +724,27 @@ private: void processData(int count, bool isComplete, std::string stringValue) {
 
 				std::string StrValue = std::to_string(value);
 				voltage = (ADC - offset) / gradient;
+				std::string StrVolatge = std::to_string(voltage);
 				//std::string StrValue = std::to_string(voltage);
 				//actualError = (voltage - (ADC * 0.01173));
 				std::string SubStrValue = StrValue.substr(0, 7);
 				strValue = gcnew String(SubStrValue.data());
 				voltageValue->Text = strValue;
-				InsertTemperatureReading(voltage);
-				//dataGridView1->Rows->Add(ID++, value, timeOnly, dateOnly);
+
+				//std::string StrVoltageSign = sign+StrVolatge;
+				std::string StrVoltageSign = sign.append(StrVolatge);
+
+				//InsertTemperatureReading(sign, voltage);
+				//int ID = 0;
+				dataGridView1->Rows->Add(id++, value, timeOnly, dateOnly);
+
 			}
 		}
 
 	}
+
+	return polarity;
 }
-
-//Server=localhost\SQLEXPRESS01;Database=master;Trusted_Connection=True;
-
-
-
-
 
 private: System::Void btnConnect_Click(System::Object^ sender, System::EventArgs^ e) {
 	connect();
@@ -754,17 +767,21 @@ private: System::Void readTimer_Tick(System::Object^ sender, System::EventArgs^ 
 			stringValue = getValue(incomingData);
 			count = CountDigitsInString(stringValue);
 			isComplete= IsCompleteMessage(stringValue);
-			processData(count, isComplete, stringValue);
-		//}
-		//catch (System::Exception^ ex)
-		//{
-		//	MessageBox::Show("Could not read from the serial port: " + ex->Message);
-		//}
+			int sgn = processData(count, isComplete, stringValue);
+			if (sgn == 1) {
+				polaritySign->Hide();
+
+			}
+			else if (sgn == 0) {
+				polaritySign->Show();
+
+			}
 	}
 }
 
 private: System::Void btnCalibrate_Click(System::Object^ sender, System::EventArgs^ e) {
 
 }
+
 };
 }
